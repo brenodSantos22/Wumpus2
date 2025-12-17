@@ -16,9 +16,6 @@ class Cenario:
         self.matrizPercp = []
         self.criar_matriz()
         self.carregar_Img()
-        self.quantPoco = tamanho-1
-        self.qtdOuro = self.quantPoco - 1
-        self.qtdWumpus = self.qtdOuro
         self.matriz2()
 
         # Carregar imagens
@@ -44,7 +41,7 @@ class Cenario:
     def criar_matriz(self):
         print(f"Criando matriz {self.tamanho}x{self.tamanho}")
         tamanho = self.tamanho
-        mundo = ["C"]*(5*5 - 1)
+        mundo = ["C"]*(self.tamanho*self.tamanho - 1)
         qtd_poco = tamanho-1
         qtd_wumpus = qtd_poco -1
         qtd_ouro = qtd_wumpus
@@ -64,6 +61,7 @@ class Cenario:
         
         random.shuffle(mundo)
         mundo2 = [[" " for _ in range(tamanho)] for _ in range(tamanho)]
+        print(mundo)
         for n, a in enumerate(mundo, start=1):
             mundo2[n%tamanho][(int(n/tamanho))%tamanho] = a
         mundo2[0][0] = "I"
