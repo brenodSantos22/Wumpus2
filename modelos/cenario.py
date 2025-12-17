@@ -172,17 +172,6 @@ class Cenario:
 
         self.criar_matriz()
 
-        self.quantPoco = self.tamanho - 1
-        self.qtdOuro = self.quantPoco - 1
-        self.qtdWumpus = self.qtdOuro
-
-        for _ in range(self.quantPoco):
-            self.poco()
-        for _ in range(self.qtdOuro):
-            self.ouro()
-        for _ in range(self.qtdWumpus):
-            self.wumpus()
-
         self.matriz2()
 
         print("\n🔄 Mundo reiniciado!")
