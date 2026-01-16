@@ -109,7 +109,11 @@ class Cenario:
                 for simbolo in tipo_celula.split(','):
                     if simbolo in self.imagens:
                         tela.blit(self.imagens[simbolo], (x, y))
-
+        jogador_x = offset_x + self.jogador_pos[1] * self.tamanho_bloco
+        jogador_y = offset_y + self.jogador_pos[0] * self.tamanho_bloco
+        jogador_img = pygame.transform.rotate(self.imagens['J'], 180)
+        tela.blit(jogador_img, (jogador_x, jogador_y))
+        
     def matriz2(self):
         self.matrizPercp = []
         for linha in range(self.tamanho):
