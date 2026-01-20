@@ -4,7 +4,9 @@ from sys import exit
 from pathlib import Path
 from modelos.cenario import Cenario
 from modelos.botao import Botao
-
+from modelos.agente import Agente
+from modelos.agente1 import Agente1 
+import time
 TAMANHO_JANELA = 700
 
 pygame.init()
@@ -35,7 +37,11 @@ def menu():
                           get_font(40), "#d7fcd4", "White")
     SAIR_BOTAO = Botao((350, 560), "SAIR", get_font(40), "#d7fcd4", "White")
 
-    botoes = [AGENTE1_BOTAO, AGENTE2_BOTAO, AGENTE3_BOTAO, SAIR_BOTAO]
+    PONTOS_BOTAO = Botao((600, 20), "PONTOS",
+                         get_font(40), "#d7fcd4", "White")
+
+    botoes = [AGENTE1_BOTAO, AGENTE2_BOTAO,
+              AGENTE3_BOTAO, SAIR_BOTAO, PONTOS_BOTAO]
 
     while True:
         tela.blit(BG, (0, 0))
@@ -51,7 +57,7 @@ def menu():
                 exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if AGENTE1_BOTAO.verificar_entrada(MENU_MOUSE_POS):
-                    jogo()
+                    agente1()
                     return 1
                 if AGENTE2_BOTAO.verificar_entrada(MENU_MOUSE_POS):
                     print("AGENTE 2 SELECIONADO")
@@ -59,6 +65,9 @@ def menu():
                 if AGENTE3_BOTAO.verificar_entrada(MENU_MOUSE_POS):
                     print("AGENTE 3 SELECIONADO")
                     return 3
+                if PONTOS_BOTAO.verificar_entrada(MENU_MOUSE_POS):
+                    print("SISTEMA DE PONTOS")
+                    return 4
                 if SAIR_BOTAO.verificar_entrada(MENU_MOUSE_POS):
                     pygame.quit()
                     exit()
@@ -66,8 +75,9 @@ def menu():
         pygame.display.update()
 
 
-def jogo():
+def agente1():
     pygame.display.set_caption('MUNDO DE WUMPUS - JOGO')
+    agente = Agente1(mundo)
     while True:
         tela.fill("black")
 
@@ -80,6 +90,15 @@ def jogo():
                     mundo.reset()
 
         mundo.desenhar(tela)
+        direcao = agente.decidir_acao()
+        mundo.mover_jogador(direcao)
+        status = agente.status()
+        if status in ["W", "P", "V"]:
+            mundo.reset()
+        
+        time.sleep(0.5)
+
+
         pygame.display.update()
 
 

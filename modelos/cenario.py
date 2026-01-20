@@ -1,8 +1,11 @@
 import pygame
+from modelos.agente1 import Agente1
+from modelos.agente import Agente
 import os
 from pathlib import Path
 import random
 Path.joinpath
+
 
 class Cenario:
     def __init__(self, caminho_img:Path, tamanho,tamanho_desenho):
@@ -11,6 +14,7 @@ class Cenario:
         self.tamanho = tamanho
         self.tamanho_bloco = self.tamanho_desenho/self.tamanho
         self.jogador_pos = [0, 0]
+        self.qtd_wumpus =  0
         self.imagens = {}
         self.matriz = []
         self.matrizPercp = []
@@ -67,6 +71,67 @@ class Cenario:
         mundo2[0][0] = "I"
         self.matriz = mundo2
 
+
+    def mover_jogador(self,direcoes):
+        movimentos = {
+            'cima': (-1, 0),
+            'baixo': (1, 0),
+            'esquerda': (0, -1),
+            'direita': (0, 1),
+        }
+        dx, dy = movimentos[direcoes]
+        self.jogador_pos[0] += dx
+        self.jogador_pos[1] += dy
+
+    def checar_Agente(self,inventario):
+       linha, coluna = self.jogador_pos
+       celula_atual = self.matriz[linha][coluna]
+       devorado = "W" in celula_atual
+       caiu = "P" in celula_atual
+       ouro = "O" in celula_atual
+
+       vitoria = False
+       if self.jogador_pos == [0, 0] and inventario['ouro'] > 0:
+           vitoria = True
+
+       if devorado:
+            return "W"
+       elif caiu:
+            return "P"
+       elif vitoria:
+            return "V"
+       else:
+            return "-"
+       
+    def pegar_ouro(self):
+        linha, coluna = self.jogador_pos
+        celula_atual = self.matriz[linha][coluna]
+        if "O" in celula_atual:
+            self.matriz[linha][coluna] = self.matriz[linha][coluna].replace("O", "C")
+            return True
+        return False
+
+       
+
+        
+
+
+
+    def direcoes_possiveis(self,jogador_pos):
+        direcoes = {
+            'cima': (self.jogador_pos[0] - 1, self.jogador_pos[1]),
+            'baixo': (self.jogador_pos[0] + 1, self.jogador_pos[1]),
+            'esquerda': (self.jogador_pos[0], self.jogador_pos[1] - 1),
+            'direita': (self.jogador_pos[0], self.jogador_pos[1] + 1)
+        }
+
+        reposta = []
+
+        for direcao, (linha, coluna) in direcoes.items():
+            if 0 <= linha < self.tamanho and 0 <= coluna < self.tamanho:
+                reposta.append(direcao)
+        return reposta
+        
     def carregar_Img(self):
         self.imagens['I'] = pygame.transform.scale(
             pygame.image.load(os.path.join(self.caminho_img, 'chaoI.png')),
@@ -165,6 +230,7 @@ class Cenario:
                         self.matrizPercp[linha][coluna] += "b"
                         self.matrizPercp[linha][coluna] = ",".join(
                             set(self.matrizPercp[linha][coluna]))
+        
 
     def reset(self):
 
