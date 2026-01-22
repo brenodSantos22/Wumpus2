@@ -22,6 +22,7 @@ class Agente(ABC):
        pass
     def status(self):
         jogo_status = self.cenario.checar_Agente(self.inventario)
+        print({"Posição": self.posicao, "Pontos": self.pontos, "Inventário": self.inventario})
         if jogo_status == "W":
             self.vivo = False
             print("O agente foi devorado pelo Wumpus!")
@@ -34,10 +35,12 @@ class Agente(ABC):
             return "P"
         elif jogo_status == "V":
             self.pontos += 1000
+            print({"Posição": self.posicao, "Pontos": self.pontos, "Inventário": self.inventario})
             return "V"
+            
         else:
             print("O agente continua vivo e explorando o mundo.")
-            print({"Posição": self.posicao, "Pontos": self.pontos, "Inventário": self.inventario})
+
         
     def reset_agente(self):
         self.posicao = self.cenario.jogador_pos

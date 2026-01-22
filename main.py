@@ -88,15 +88,20 @@ def agente1():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
                     mundo.reset()
-
+        
         mundo.desenhar(tela)
+        pygame.display.update()
+        time.sleep(0.2)
         direcao = agente.decidir_acao()
         mundo.mover_jogador(direcao)
         mundo.matriz2()
         status = agente.status()
+        mundo.desenhar(tela)
+        pygame.display.update()
         if status in ["W", "P"]:
             mundo.reset()
             agente.reset_agente()
+            
         elif status == "V" :
             print("voce venceu o jogo!")
             time.sleep(5)   
@@ -105,8 +110,7 @@ def agente1():
         
         time.sleep(0.9)
 
-
-        pygame.display.update()
+        
     pygame.display.update()
 
 menu()
