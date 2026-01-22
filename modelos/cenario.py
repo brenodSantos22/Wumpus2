@@ -127,6 +127,7 @@ class Cenario:
         if "W" in self.matriz[wumpus[0]][wumpus[1]]:
             self.matriz[wumpus[0]][wumpus[1]] = self.matriz[wumpus[0]][wumpus[1]].replace("W", "D")
             return True
+        return False
         
 
 

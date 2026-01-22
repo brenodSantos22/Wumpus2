@@ -11,7 +11,7 @@ TAMANHO_JANELA = 700
 
 pygame.init()
 caminho = Path('img')
-mundo = Cenario(caminho, tamanho=3, tamanho_desenho=TAMANHO_JANELA)
+mundo = Cenario(caminho, tamanho=4, tamanho_desenho=TAMANHO_JANELA)
 
 
 BG = pygame.transform.scale(
@@ -104,7 +104,7 @@ def agente1():
             
         elif status == "V" :
             print("voce venceu o jogo!")
-            time.sleep(5)   
+            time.sleep(3)   
             break
 
         

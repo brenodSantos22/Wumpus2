@@ -23,10 +23,25 @@ class Agente1(Agente):
                 self.pontos += 100
                 self.cenario.matriz2()
         
-        if "f" in self.get_percepcao_atual():
-            if self.inventario['flechas'] > 0 and self.cenario.atirar_flecha(acao):
+        if "f" in self.get_percepcao_atual() and self.inventario['flechas'] > 0:
+            direcoes_possiveis = self.cenario.direcoes_possiveis(self.cenario.jogador_pos)
+            if direcoes_possiveis:
+                direcao_tiro = random.choice(direcoes_possiveis)
+                acertou = self.cenario.atirar_flecha(direcao_tiro)
                 self.inventario['flechas'] -= 1
-                self.atirou = True
+                atirou = True
+                if acertou:
+                    self.pontos += 50
+                    print("WUMPUS ABATIDO!")
+                else:
+                    self.pontos -= 10
+                    print("FLECHA PERDIDA!")
+
+
+
+                    
+                
+        
                 
     
         return acao
