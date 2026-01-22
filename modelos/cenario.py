@@ -91,15 +91,15 @@ class Cenario:
        ouro = "O" in celula_atual
 
        vitoria = False
-       if self.jogador_pos == [0, 0] and inventario['ouro'] > 0:
+       if (self.jogador_pos == [0, 0]) and (inventario['ouro'] > 0):
            vitoria = True
 
-       if devorado:
+       if vitoria:
+            return "V"
+       elif devorado:
             return "W"
        elif caiu:
             return "P"
-       elif vitoria:
-            return "V"
        else:
             return "-"
        
@@ -111,8 +111,22 @@ class Cenario:
             return True
         return False
 
+    def atirar_flecha(self, direcao):
+        direcoes ={
+            'cima': (-1, 0),
+            'baixo': (1, 0),
+            'esquerda': (0, -1),
+            'direita': (0, 1),
+        }
        
-
+        posicao = self.jogador_pos
+        wumpus = (
+            posicao[0] + direcoes[direcao][0],
+            posicao[1] + direcoes[direcao][1]
+        )
+        if "W" in self.matriz[wumpus[0]][wumpus[1]]:
+            self.matriz[wumpus[0]][wumpus[1]] = self.matriz[wumpus[0]][wumpus[1]].replace("W", "D")
+            return True
         
 
 
@@ -149,7 +163,7 @@ class Cenario:
             pygame.image.load(os.path.join(self.caminho_img, 'wumpusV.png')),
             (self.tamanho_bloco, self.tamanho_bloco)
         )
-        self.imagens['WM'] = pygame.transform.scale(
+        self.imagens['D'] = pygame.transform.scale(
             pygame.image.load(os.path.join(self.caminho_img, 'wumpusM.png')),
             (self.tamanho_bloco, self.tamanho_bloco)
         )
@@ -226,10 +240,10 @@ class Cenario:
                         self.matrizPercp[linha][coluna+1] = ",".join(
                             set(self.matrizPercp[linha][coluna+1]))
 
-                    if "O" in self.matriz[linha][coluna]:
-                        self.matrizPercp[linha][coluna] += "b"
-                        self.matrizPercp[linha][coluna] = ",".join(
-                            set(self.matrizPercp[linha][coluna]))
+                if "O" in self.matriz[linha][coluna]:
+                    self.matrizPercp[linha][coluna] += "b"
+                    self.matrizPercp[linha][coluna] = ",".join(
+                    set(self.matrizPercp[linha][coluna]))
         
 
     def reset(self):

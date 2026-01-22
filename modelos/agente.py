@@ -8,7 +8,7 @@ class Agente(ABC):
         self.pontos = 0
 
         self.inventario = {
-            'flechas': self.cenario.qtd_wumpus,
+            'flechas': 1,
             'ouro': 0
         }
         self.vivo = True
@@ -33,9 +33,19 @@ class Agente(ABC):
             print("O agente caiu em um poço!")
             return "P"
         elif jogo_status == "V":
-            print("O agente venceu o jogo!")
             self.pontos += 1000
             return "V"
         else:
             print("O agente continua vivo e explorando o mundo.")
+            print({"Posição": self.posicao, "Pontos": self.pontos, "Inventário": self.inventario})
         
+    def reset_agente(self):
+        self.posicao = self.cenario.jogador_pos
+        self.pontos = 0
+
+        self.inventario = {
+             'flechas': 1,
+             'ouro': 0
+         }
+        self.vivo = True
+        self.qtdpassos = 0    
