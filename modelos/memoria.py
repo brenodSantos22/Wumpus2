@@ -9,7 +9,9 @@ class Memoria:
         self.suspeitas_wumpus = set()
         self.com_ouro = set()
         self.ouro_coletado = set()
-        
+        self.wumpus_confirmado = set()
+        self.wumpus_morto = set()
+        self.poco_confirmado = set()
         self.visitadas.add((0, 0))
         self.seguras.add((0, 0))
     
@@ -21,19 +23,33 @@ class Memoria:
             self.com_ouro.add(pos)
         
         self._inferir(pos, percepcao, tamanho)
-    
-    def _inferir(self, pos, percepcao, tamanho):
+
+
+    def confirmar_morte(self,pos,tipo):
+        self.visitadas.add(pos)
+        self.seguras.discard(pos)
+
+        if tipo =="W":
+            self.wumpus_confirmado.add(pos)
+            self.seguras.discard(pos)
+        else:
+            self.poco_confirmado.add(pos)
+            self.suspeitas_poco.add(pos)
+            self.suspeitas_wumpus.discard    
+
+    def _obter_vizinhos(self,pos,tamanho):
         linha, coluna = pos
         vizinhos = []
-        
-        if linha > 0:
-            vizinhos.append((linha - 1, coluna))
-        if linha < tamanho - 1:
-            vizinhos.append((linha + 1, coluna))
-        if coluna > 0:
-            vizinhos.append((linha, coluna - 1))
-        if coluna < tamanho - 1:
-            vizinhos.append((linha, coluna + 1))
+        if linha>0 :vizinhos.append((linha-1,coluna))
+        if linha<tamanho-1:vizinhos.append((linha+1,coluna))
+        if coluna > 0: vizinhos.append((linha,coluna-1))
+        if coluna< tamanho-1:vizinhos.append((linha,coluna+1))
+        return vizinhos
+
+    
+    def _inferir(self, pos, percepcao, tamanho):
+       
+        vizinhos = self._obter_vizinhos(pos,tamanho)
         
         if 'v' not in percepcao:
             for v in vizinhos:
@@ -63,9 +79,13 @@ class Memoria:
             self.com_ouro.remove(pos)
     
     def marcar_wumpus_morto(self, pos):
-        self.suspeitas_wumpus.discard(pos)
+        if pos in self.wumpus_confirmado:
+            self.wumpus_confirmado.remove(pos)
+        self.wumpus_morto.add(pos)
         self.seguras.add(pos)
-    
+       
+
+
     def get_seguras_nao_visitadas(self):
         return [s for s in self.seguras if s not in self.visitadas]
     
@@ -81,14 +101,14 @@ class Memoria:
         return objetivos
     
     def get_obstaculos(self):
-        obstaculos = []
-        for sala in self.suspeitas_poco:
-            if sala in self.suspeitas_wumpus:
-                obstaculos.append(sala)
         return list((self.suspeitas_poco | self.suspeitas_wumpus) - self.seguras)
     
     def calcular_risco(self, pos):
         risco = 0
+        if pos in self.wumpus_morto:
+            return 0
+        if pos in self.wumpus_confirmado or pos in self.poco_confirmado:
+            return 100
         if pos in self.suspeitas_wumpus:
             risco += 5
         if pos in self.suspeitas_poco:

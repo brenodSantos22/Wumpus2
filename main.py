@@ -123,7 +123,6 @@ def agente2():
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
-                agente.memoria.reset()
                 exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
@@ -144,17 +143,12 @@ def agente2():
         if status in ["W", "P"]:
 
             posicao_morte = tuple(mundo.jogador_pos)
+            agente.memoria.confirmar_morte(posicao_morte,status)
             
-            if status == "W":
-                agente.memoria.suspeitas_wumpus.add(posicao_morte)
-            else:
-                agente.memoria.suspeitas_poco.add(posicao_morte)
-            agente.memoria.seguras.discard(posicao_morte)
-            agente.memoria.visitadas.add(posicao_morte)
-            
-
+        
             mundo.reset()
             agente.reset_agente2()
+            mundo.matriz2()
         elif status == "V":
             mundo.reset()
             agente.memoria.reset()

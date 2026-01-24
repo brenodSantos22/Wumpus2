@@ -29,7 +29,7 @@ class Agente2(Agente):
                 self.memoria.marcar_ouro_coletado(pos_atual)
         
         
-        if 'f' in percepcao and self.inventario['flechas'] > 0:
+        if  self.inventario['flechas'] > 0:
             direcao_tiro = self._decidir_tiro(pos_atual)
             if direcao_tiro:
                 return direcao_tiro
@@ -65,15 +65,16 @@ class Agente2(Agente):
             elif direcao == 'ESQUERDA': alvo = (linha, coluna-1)
             elif direcao == 'DIREITA': alvo = (linha, coluna+1)
             
-            if alvo and self.memoria.calcular_risco(alvo) >= 5:
+            if alvo in self.memoria.wumpus_confirmado:
                 acertou = self.cenario.atirar_flecha(direcao)
                 self.inventario['flechas'] -= 1
                 if acertou:
                     self.pontos += 50
                     self.memoria.marcar_wumpus_morto(alvo)
+                    return direcao
                 else:
                     self.pontos -= 10
-                return direcao
+                    return None
         return None
 
     def reset_agente2(self):
