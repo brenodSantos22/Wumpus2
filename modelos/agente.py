@@ -8,7 +8,7 @@ class Agente(ABC):
         self.pontos = 0
 
         self.inventario = {
-            'flechas': 1,
+            'flechas':3,
             'ouro': 0
         }
         self.vivo = True
@@ -18,7 +18,7 @@ class Agente(ABC):
 
     def get_percepcao_atual(self):
        pass
-    def decidir_acao(self):
+    def decidir_acao(self) -> str| None:
        pass
     def status(self):
         jogo_status = self.cenario.checar_Agente(self.inventario)
@@ -38,8 +38,7 @@ class Agente(ABC):
             print({"Posição": self.posicao, "Pontos": self.pontos, "Inventário": self.inventario})
             return "V"
             
-        else:
-            print("O agente continua vivo e explorando o mundo.")
+        
 
         
     def reset_agente(self):
@@ -47,7 +46,7 @@ class Agente(ABC):
         self.pontos = 0
 
         self.inventario = {
-             'flechas': 1,
+             'flechas': 3,
              'ouro': 0
          }
         self.vivo = True

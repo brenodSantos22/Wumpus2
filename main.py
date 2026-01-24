@@ -5,13 +5,14 @@ from pathlib import Path
 from modelos.cenario import Cenario
 from modelos.botao import Botao
 from modelos.agente import Agente
-from modelos.agente1 import Agente1 
+from modelos.agente1 import Agente1
+from modelos.agente2 import Agente2
 import time
 TAMANHO_JANELA = 700
 
 pygame.init()
 caminho = Path('img')
-mundo = Cenario(caminho, tamanho=4, tamanho_desenho=TAMANHO_JANELA)
+mundo = Cenario(caminho, tamanho=5, tamanho_desenho=TAMANHO_JANELA)
 
 
 BG = pygame.transform.scale(
@@ -61,7 +62,7 @@ def menu():
                     return 1
                 if AGENTE2_BOTAO.verificar_entrada(MENU_MOUSE_POS):
                     print("AGENTE 2 SELECIONADO")
-                    return 2
+                    agente2()
                 if AGENTE3_BOTAO.verificar_entrada(MENU_MOUSE_POS):
                     print("AGENTE 3 SELECIONADO")
                     return 3
@@ -88,7 +89,7 @@ def agente1():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
                     mundo.reset()
-        
+
         mundo.desenhar(tela)
         pygame.display.update()
         time.sleep(0.2)
@@ -101,16 +102,69 @@ def agente1():
         if status in ["W", "P"]:
             mundo.reset()
             agente.reset_agente()
-            
-        elif status == "V" :
+
+        elif status == "V":
             print("voce venceu o jogo!")
-            time.sleep(3)   
+            time.sleep(3)
             break
 
-        
         time.sleep(0.9)
 
-        
     pygame.display.update()
+
+
+def agente2():
+    pygame.display.set_caption('MUNDO DE WUMPUS - AGENTE INTELIGENTE')
+    agente = Agente2(mundo)
+
+    while True:
+        tela.fill("black")
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                agente.memoria.reset()
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    mundo.reset()
+
+        mundo.desenhar(tela)
+        pygame.display.update()
+        time.sleep(0.2)
+
+        direcao = agente.decidir_acao()
+        mundo.mover_jogador(direcao)
+        mundo.matriz2()
+        status = agente.status()
+
+        mundo.desenhar(tela)
+        pygame.display.update()
+
+        if status in ["W", "P"]:
+
+            posicao_morte = tuple(mundo.jogador_pos)
+            
+            if status == "W":
+                agente.memoria.suspeitas_wumpus.add(posicao_morte)
+            else:
+                agente.memoria.suspeitas_poco.add(posicao_morte)
+            agente.memoria.seguras.discard(posicao_morte)
+            agente.memoria.visitadas.add(posicao_morte)
+            
+
+            mundo.reset()
+            agente.reset_agente2()
+        elif status == "V":
+            mundo.reset()
+            agente.memoria.reset()
+            print("AGENTE INTELIGENTE VENCEU O JOGO!")
+            time.sleep(3)
+            break
+
+        time.sleep(0.9)
+
+    pygame.display.update()
+
 
 menu()

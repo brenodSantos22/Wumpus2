@@ -2,6 +2,7 @@ import pygame
 from modelos.agente1 import Agente1
 from modelos.agente import Agente
 import os
+import copy
 from pathlib import Path
 import random
 Path.joinpath
@@ -15,12 +16,14 @@ class Cenario:
         self.tamanho_bloco = self.tamanho_desenho/self.tamanho
         self.jogador_pos = [0, 0]
         self.qtd_wumpus =  0
+        self.ouro_memoria = []
         self.imagens = {}
         self.matriz = []
         self.matrizPercp = []
         self.criar_matriz()
         self.carregar_Img()
         self.matriz2()
+        self.matriz_original = copy.deepcopy(self.matriz)
 
         # Carregar imagens
         chao = pygame.image.load(caminho_img.joinpath("chao.png"))
@@ -52,7 +55,7 @@ class Cenario:
         
         qtd_poco_acc = qtd_poco
         qtd_wumpus_acc = qtd_poco_acc + qtd_wumpus
-        qtd_ouro_acc = qtd_wumpus_acc + qtd_ouro
+        qtd_ouro_acc = 1
         
         for i in range(qtd_poco_acc):
             mundo[i] = "P"
@@ -60,7 +63,7 @@ class Cenario:
         for i in range(qtd_poco_acc, qtd_wumpus_acc):
             mundo[i] = "W"
         
-        for i in range(qtd_wumpus_acc, qtd_ouro_acc):
+        for i in range( qtd_ouro_acc):
             mundo[i] = "O"
         
         random.shuffle(mundo)
@@ -74,10 +77,10 @@ class Cenario:
 
     def mover_jogador(self,direcoes):
         movimentos = {
-            'cima': (-1, 0),
-            'baixo': (1, 0),
-            'esquerda': (0, -1),
-            'direita': (0, 1),
+            'CIMA': (-1, 0),
+            'BAIXO': (1, 0),
+            'ESQUERDA': (0, -1),
+            'DIREITA': (0, 1),
         }
         dx, dy = movimentos[direcoes]
         self.jogador_pos[0] += dx
@@ -108,15 +111,16 @@ class Cenario:
         celula_atual = self.matriz[linha][coluna]
         if "O" in celula_atual:
             self.matriz[linha][coluna] = self.matriz[linha][coluna].replace("O", "C")
+            self.matriz2()
             return True
         return False
 
     def atirar_flecha(self, direcao):
         direcoes ={
-            'cima': (-1, 0),
-            'baixo': (1, 0),
-            'esquerda': (0, -1),
-            'direita': (0, 1),
+            'CIMA': (-1, 0),
+            'BAIXO': (1, 0),
+            'ESQUERDA': (0, -1),
+            'DIREITA': (0, 1),
         }
        
         posicao = self.jogador_pos
@@ -134,10 +138,10 @@ class Cenario:
 
     def direcoes_possiveis(self,jogador_pos):
         direcoes = {
-            'cima': (self.jogador_pos[0] - 1, self.jogador_pos[1]),
-            'baixo': (self.jogador_pos[0] + 1, self.jogador_pos[1]),
-            'esquerda': (self.jogador_pos[0], self.jogador_pos[1] - 1),
-            'direita': (self.jogador_pos[0], self.jogador_pos[1] + 1)
+            'CIMA': (self.jogador_pos[0] - 1, self.jogador_pos[1]),
+            'BAIXO': (self.jogador_pos[0] + 1, self.jogador_pos[1]),
+            'ESQUERDA': (self.jogador_pos[0], self.jogador_pos[1] - 1),
+            'DIREITA': (self.jogador_pos[0], self.jogador_pos[1] + 1)
         }
 
         reposta = []
@@ -250,12 +254,8 @@ class Cenario:
     def reset(self):
 
         self.jogador_pos = [0, 0]
-        self.matriz = []
-        self.matrizPercp = []
-
-        self.criar_matriz()
-
+        self.matriz = copy.deepcopy(self.matriz_original)
         self.matriz2()
 
-        print("\n🔄 Mundo reiniciado!")
+        print("\n Mundo reiniciado!")
         print(f"Jogador na posição: {self.jogador_pos}")
